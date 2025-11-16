@@ -1,8 +1,6 @@
 #!/bin/bash
 cd /home/ec2-user/backend
 
-# Install npm dependencies
-npm install
 
 # Retrieve environment variables from Parameter Store
 export DB_HOST=$(aws ssm get-parameter --name "/dev/db/host" --with-decryption --query Parameter.Value --output text --region us-east-1)
@@ -18,7 +16,7 @@ export CDN_DOMAIN=$(aws ssm get-parameter --name "/dev/cdn/domain" --query Param
 export AWS_REGION=$(aws ssm get-parameter --name "/dev/aws/region" --query Parameter.Value --output text --region us-east-1)
 
 # Create .env file
-cat > .env << EOF
+cat > /home/ec2-user/backend/.env << 'EOF'
 DB_HOST=${DB_HOST}
 DB_USER=${DB_USER}
 DB_PASSWORD=${DB_PASSWORD}
