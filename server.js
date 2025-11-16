@@ -48,6 +48,7 @@ const requireAdmin = (req, res, next) => {
   }
   next();
 };
+console.log("Deployment test " + new Date());
 // S3 Configuration
 const s3 = new S3Client({ region: "us-east-1" });
 const BUCKET_NAME = process.env.S3_BUCKET_NAME || "restaurant-react-app-00009";
