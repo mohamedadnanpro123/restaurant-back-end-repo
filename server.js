@@ -54,8 +54,8 @@ const requireAdmin = (req, res, next) => {
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD
+    user: process.env.GMAIL_EMAIL,                      // ✅ Changed to GMAIL_EMAIL
+    pass: process.env.GMAIL_PASSWORD.replace(/\s/g, '') // ✅ Changed to GMAIL_PASSWORD
   }
 });
 
@@ -318,6 +318,8 @@ app.post("/api/register", async (req, res) => {
     );
 
     console.log("✅ User registered:", email);
+     // Send welcome email
+    await sendWelcomeEmail(name || 'Customer', email);
     res.json({
       message: "Registration successful",
       token: token,
