@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import nodemailer from 'nodemailer';
 import express from "express";
 import multer from "multer";
 import cors from "cors";
@@ -48,6 +49,203 @@ const requireAdmin = (req, res, next) => {
   }
   next();
 };
+
+// Email Configuration
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD
+  }
+});
+
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("❌ Email configuration error:", error);
+  } else {
+    console.log("✅ Email server ready to send messages");
+  }
+});
+
+const createWelcomeEmail = (userName, userEmail) => {
+  return {
+    from: {
+      name: 'Restaurant Solutions',
+      address: process.env.GMAIL_USER
+    },
+    to: userEmail,
+    subject: '🎉 Welcome to Restaurant Solutions - Your Account is Ready!',
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2d3436;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+          }
+          .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+          }
+          .header {
+            background: linear-gradient(135deg, #5a6c7d 0%, #4a5568 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+          }
+          .header h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 700;
+          }
+          .header p {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+          }
+          .content {
+            padding: 40px 30px;
+          }
+          .content h2 {
+            color: #2d3436;
+            font-size: 24px;
+            margin: 0 0 20px 0;
+          }
+          .content p {
+            color: #636e72;
+            font-size: 16px;
+            margin: 0 0 15px 0;
+          }
+          .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #5a6c7d 0%, #4a5568 100%);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 20px 0;
+          }
+          .features {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+          }
+          .feature {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+          }
+          .feature-icon {
+            font-size: 24px;
+            margin-right: 15px;
+          }
+          .feature-text {
+            color: #2d3436;
+            font-size: 15px;
+          }
+          .footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #636e72;
+            font-size: 14px;
+          }
+          .footer a {
+            color: #5a6c7d;
+            text-decoration: none;
+            font-weight: 600;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>✨ Welcome to Restaurant Solutions!</h1>
+            <p>Your premium food delivery experience starts here</p>
+          </div>
+          
+          <div class="content">
+            <h2>Hi ${userName}! 👋</h2>
+            
+            <p>Welcome aboard! We're thrilled to have you join the Restaurant Solutions family. Your account has been successfully created and you're all set to explore our delicious menu.</p>
+            
+            <div class="features">
+              <div class="feature">
+                <span class="feature-icon">🍕</span>
+                <span class="feature-text"><strong>Browse Premium Menu</strong> - Discover our curated selection of gourmet dishes</span>
+              </div>
+              <div class="feature">
+                <span class="feature-icon">🛒</span>
+                <span class="feature-text"><strong>Easy Ordering</strong> - Add items to cart and checkout in seconds</span>
+              </div>
+              <div class="feature">
+                <span class="feature-icon">📋</span>
+                <span class="feature-text"><strong>Track Orders</strong> - Monitor your order status in real-time</span>
+              </div>
+              <div class="feature">
+                <span class="feature-icon">🎉</span>
+                <span class="feature-text"><strong>Exclusive Deals</strong> - Get access to special offers and promotions</span>
+              </div>
+            </div>
+            
+            <p><strong>Your Account Details:</strong></p>
+            <p style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #5a6c7d;">
+              📧 Email: ${userEmail}<br>
+              🔐 You can login anytime with your email and password
+            </p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="https://app.restaurantsolutions.shop" class="button">Start Ordering Now 🚀</a>
+            </div>
+            
+            <p style="font-size: 14px; color: #636e72; margin-top: 30px;">
+              Need help? Reply to this email or contact our support team. We're here to make your experience amazing!
+            </p>
+          </div>
+          
+          <div class="footer">
+            <p><strong>Restaurant Solutions</strong> - Premium Food Delivery</p>
+            <p>
+              <a href="https://app.restaurantsolutions.shop">Visit Website</a> | 
+              <a href="https://app.restaurantsolutions.shop">Browse Menu</a> | 
+              <a href="mailto:${process.env.GMAIL_USER}">Contact Support</a>
+            </p>
+            <p style="margin-top: 20px; font-size: 12px;">
+              You're receiving this email because you created an account at Restaurant Solutions.<br>
+              © ${new Date().getFullYear()} Restaurant Solutions. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `
+  };
+};
+
+const sendWelcomeEmail = async (userName, userEmail) => {
+  try {
+    const mailOptions = createWelcomeEmail(userName, userEmail);
+    const info = await transporter.sendMail(mailOptions);
+    console.log("✅ Welcome email sent:", info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error("❌ Email sending failed:", error);
+    return { success: false, error: error.message };
+  }
+};
+
 console.log("Deployment test " + new Date());
 // S3 Configuration
 const s3 = new S3Client({ region: "us-east-1" });
