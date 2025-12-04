@@ -47,6 +47,8 @@ export NODE_ENV=$(aws ssm get-parameter --name "$PARAM_PATH/node/env" --query Pa
 export JWT_SECRET=$(aws ssm get-parameter --name "$PARAM_PATH/jwt/secret" --with-decryption --query Parameter.Value --output text --region $AWS_REGION)
 export S3_BUCKET=$(aws ssm get-parameter --name "$PARAM_PATH/s3/bucket" --query Parameter.Value --output text --region $AWS_REGION)
 export CDN_DOMAIN=$(aws ssm get-parameter --name "$PARAM_PATH/cdn/domain" --query Parameter.Value --output text --region $AWS_REGION)
+export GMAIL_EMAIL=$(aws ssm get-parameter --name "$PARAM_PATH/gmail/email" --query Parameter.Value --output text --region $AWS_REGION)  # ← ADD
+export GMAIL_PASSWORD=$(aws ssm get-parameter --name "$PARAM_PATH/gmail/password" --with-decryption --query Parameter.Value --output text --region $AWS_REGION)  # ← ADD
 
 # Create .env file
 cat > /home/ec2-user/backend/.env << EOF
@@ -61,6 +63,8 @@ JWT_SECRET=$JWT_SECRET
 S3_BUCKET_NAME=$S3_BUCKET
 CDN_DOMAIN=$CDN_DOMAIN
 AWS_REGION=$AWS_REGION
+GMAIL_EMAIL=$GMAIL_EMAIL          # ← ADD THIS
+GMAIL_PASSWORD=$GMAIL_PASSWORD    # ← ADD THIS
 EOF
 
 # Ensure proper ownership and permissions
