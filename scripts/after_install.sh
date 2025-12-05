@@ -50,6 +50,9 @@ export CDN_DOMAIN=$(aws ssm get-parameter --name "$PARAM_PATH/cdn/domain" --quer
 export GMAIL_EMAIL=$(aws ssm get-parameter --name "$PARAM_PATH/gmail/email" --query Parameter.Value --output text --region $AWS_REGION)  # ← ADD
 export GMAIL_PASSWORD=$(aws ssm get-parameter --name "$PARAM_PATH/gmail/password" --with-decryption --query Parameter.Value --output text --region $AWS_REGION)  # ← ADD
 
+# Remove old .env file if it exists (might be owned by root from UserData)
+sudo rm -f /home/ec2-user/backend/.env
+
 # Create .env file
 cat > /home/ec2-user/backend/.env << EOF
 DB_HOST=$DB_HOST
