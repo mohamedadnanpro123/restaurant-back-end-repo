@@ -26,4 +26,8 @@ phases:
 artifacts:
   files:
     - '**/*'
+  exclude-paths:
+    - node_modules/**
+    - .git/**
+    - .env
   name: BackendBuildArtifact
