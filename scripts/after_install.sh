@@ -1,10 +1,16 @@
 #!/bin/bash
+
+# Ensure backend directory is writable by ec2-user
+sudo chown -R ec2-user:ec2-user /home/ec2-user/backend
+chmod -R 755 /home/ec2-user/backend
+
 set -e
 
 cd /home/ec2-user/backend
 
 # Install dependencies
-npm install  # ← ADD THIS LINE
+su - ec2-user -c "cd /home/ec2-user/backend && npm install"
+
 
 echo "🔍 Detecting environment..."
 
@@ -69,6 +75,8 @@ AWS_REGION=$AWS_REGION
 GMAIL_EMAIL=$GMAIL_EMAIL          # ← ADD THIS
 GMAIL_PASSWORD=$GMAIL_PASSWORD    # ← ADD THIS
 EOF
+su - ec2-user -c "cd /home/ec2-user/backend && pm2 start server.js --name restaurant-api-dev"
+su - ec2-user -c "pm2 save"
 
 # Ensure proper ownership and permissions
 chown -R ec2-user:ec2-user /home/ec2-user/backend
