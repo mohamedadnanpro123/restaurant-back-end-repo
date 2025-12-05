@@ -1,12 +1,15 @@
 #!/bin/bash
-
+set -e
 # Ensure backend directory is writable by ec2-user
 sudo chown -R ec2-user:ec2-user /home/ec2-user/backend
 chmod -R 755 /home/ec2-user/backend
 
-set -e
+
 
 cd /home/ec2-user/backend
+
+# Remove old .env file if it exists (might be owned by root from UserData)
+sudo rm -f /home/ec2-user/backend/.env
 
 # Install dependencies
 su - ec2-user -c "cd /home/ec2-user/backend && npm install"
@@ -56,8 +59,7 @@ export CDN_DOMAIN=$(aws ssm get-parameter --name "$PARAM_PATH/cdn/domain" --quer
 export GMAIL_EMAIL=$(aws ssm get-parameter --name "$PARAM_PATH/gmail/email" --query Parameter.Value --output text --region $AWS_REGION)  # ← ADD
 export GMAIL_PASSWORD=$(aws ssm get-parameter --name "$PARAM_PATH/gmail/password" --with-decryption --query Parameter.Value --output text --region $AWS_REGION)  # ← ADD
 
-# Remove old .env file if it exists (might be owned by root from UserData)
-sudo rm -f /home/ec2-user/backend/.env
+
 
 # Create .env file
 cat > /home/ec2-user/backend/.env << EOF
