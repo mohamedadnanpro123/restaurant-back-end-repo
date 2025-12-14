@@ -23,7 +23,7 @@ AWS_REGION=$(ec2-metadata --availability-zone | cut -d " " -f 2 | sed 's/[a-z]$/
 
 # Get Environment tag from EC2 instance
 ENVIRONMENT_TAG=$(aws ec2 describe-tags \
-  --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=Environment" \
+  --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=environment" \
   --query 'Tags[0].Value' \
   --output text \
   --region $AWS_REGION)
@@ -43,20 +43,19 @@ else
     exit 1
 fi
 
-# Retrieve environment variables from Parameter Store
-export DB_HOST=$(aws ssm get-parameter --name "$PARAM_PATH/db/host" --with-decryption --query Parameter.Value --output text --region $AWS_REGION)
-export DB_USER=$(aws ssm get-parameter --name "$PARAM_PATH/db/username" --with-decryption --query Parameter.Value --output text --region $AWS_REGION)
-export DB_PASSWORD=$(aws ssm get-parameter --name "$PARAM_PATH/db/password" --with-decryption --query Parameter.Value --output text --region $AWS_REGION)
-export DB_NAME=$(aws ssm get-parameter --name "$PARAM_PATH/db/name" --query Parameter.Value --output text --region $AWS_REGION)
-export DB_PORT=$(aws ssm get-parameter --name "$PARAM_PATH/db/port" --query Parameter.Value --output text --region $AWS_REGION)
-export APP_PORT=$(aws ssm get-parameter --name "$PARAM_PATH/app/port" --query Parameter.Value --output text --region $AWS_REGION)
-export NODE_ENV=$(aws ssm get-parameter --name "$PARAM_PATH/node/env" --query Parameter.Value --output text --region $AWS_REGION)
-export JWT_SECRET=$(aws ssm get-parameter --name "$PARAM_PATH/jwt/secret" --with-decryption --query Parameter.Value --output text --region $AWS_REGION)
-export S3_BUCKET=$(aws ssm get-parameter --name "$PARAM_PATH/s3/bucket" --query Parameter.Value --output text --region $AWS_REGION)
-export CDN_DOMAIN=$(aws ssm get-parameter --name "$PARAM_PATH/cdn/domain" --query Parameter.Value --output text --region $AWS_REGION)
-export GMAIL_EMAIL=$(aws ssm get-parameter --name "$PARAM_PATH/gmail/email" --query Parameter.Value --output text --region $AWS_REGION)
-export GMAIL_PASSWORD=$(aws ssm get-parameter --name "$PARAM_PATH/gmail/password" --with-decryption --query Parameter.Value --output text --region $AWS_REGION)
-
+# Retrieve environment variables from Parameter Store (using UNDERSCORES)
+export DB_HOST=$(aws ssm get-parameter --name "${PARAM_PATH}/db_host" --with-decryption --query Parameter.Value --output text --region $AWS_REGION)
+export DB_USER=$(aws ssm get-parameter --name "${PARAM_PATH}/db_user" --with-decryption --query Parameter.Value --output text --region $AWS_REGION)
+export DB_PASSWORD=$(aws ssm get-parameter --name "${PARAM_PATH}/db_password" --with-decryption --query Parameter.Value --output text --region $AWS_REGION)
+export DB_NAME=$(aws ssm get-parameter --name "${PARAM_PATH}/db_name" --query Parameter.Value --output text --region $AWS_REGION)
+export DB_PORT=$(aws ssm get-parameter --name "${PARAM_PATH}/db_port" --query Parameter.Value --output text --region $AWS_REGION)
+export APP_PORT=$(aws ssm get-parameter --name "${PARAM_PATH}/port" --query Parameter.Value --output text --region $AWS_REGION)
+export NODE_ENV=$(aws ssm get-parameter --name "${PARAM_PATH}/node_env" --query Parameter.Value --output text --region $AWS_REGION)
+export JWT_SECRET=$(aws ssm get-parameter --name "${PARAM_PATH}/jwt_secret" --with-decryption --query Parameter.Value --output text --region $AWS_REGION)
+export S3_BUCKET=$(aws ssm get-parameter --name "${PARAM_PATH}/s3_bucket_name" --query Parameter.Value --output text --region $AWS_REGION)
+export CDN_DOMAIN=$(aws ssm get-parameter --name "${PARAM_PATH}/cdn_domain" --query Parameter.Value --output text --region $AWS_REGION)
+export GMAIL_EMAIL=$(aws ssm get-parameter --name "${PARAM_PATH}/gmail_email" --query Parameter.Value --output text --region $AWS_REGION)
+export GMAIL_PASSWORD=$(aws ssm get-parameter --name "${PARAM_PATH}/gmail_password" --with-decryption --query Parameter.Value --output text --region $AWS_REGION)
 # Create .env file
 cat > /home/ec2-user/backend/.env << EOF
 DB_HOST=$DB_HOST
