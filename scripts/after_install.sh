@@ -78,9 +78,15 @@ sudo chown -R ec2-user:ec2-user /home/ec2-user/backend
 chmod 600 /home/ec2-user/backend/.env
 
 # Start PM2 app
+
+# Delete old process to prevent duplicates
+pm2 delete restaurant-api-$ENVIRONMENT_TAG 2>/dev/null || true
+
+# Start fresh
 cd /home/ec2-user/backend
-pm2 start server.js --name restaurant-api-dev || pm2 restart restaurant-api-dev
+pm2 start server.js --name restaurant-api-$ENVIRONMENT_TAG
 pm2 save
 
 echo "✅ Environment configured for: $ENVIRONMENT_TAG"
 echo "✅ .env file created successfully"
+echo "✅ PM2 process started: restaurant-api-$ENVIRONMENT_TAG"
