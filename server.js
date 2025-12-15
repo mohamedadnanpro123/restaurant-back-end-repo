@@ -7,7 +7,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import pool from "./db.js";
 import jwt from 'jsonwebtoken';
 dotenv.config();
-
+// Production deployment test - December 15, 2025
 // Debug: Check environment variables
 console.log("🔍 Environment Variables Check:");
 console.log("DB_HOST:", process.env.DB_HOST);
