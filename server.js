@@ -19,7 +19,7 @@ const app = express();
 app.set('trust proxy', true);
 const PORT = process.env.PORT || 5000;
 app.use(cors({
-  origin: ['https://app.restaurantsolutions.shop','http://localhost:3000','https://www.restaurantsolutions.shop', 'http://localhost:5000','https://restaurantsolutions.shop'],
+  origin: ['https://app.restaurantsolutions.shop','http://localhost:3000','https://www.restaurantsolutions.shop', 'http://localhost:5000','https://restaurantsolutions.shop','https://admin.restaurantsolutions.shop'],
   credentials: true
 }));
 app.use(express.json());
