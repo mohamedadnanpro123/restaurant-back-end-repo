@@ -13,3 +13,13 @@ echo "🔍 Detected environment: $ENVIRONMENT_TAG"
 
 # Stop the current application
 su - ec2-user -c "pm2 stop restaurant-api-$ENVIRONMENT_TAG || true"
+
+# Remove old deployment directory completely (don't backup)
+echo "🗑️ Removing old deployment..."
+rm -rf /home/ec2-user/backend
+
+# Ensure the directory exists and has correct permissions
+mkdir -p /home/ec2-user/backend
+chown -R ec2-user:ec2-user /home/ec2-user/backend
+
+echo "✅ Ready for new deployment"
