@@ -28,14 +28,14 @@ jobs:
             -x ".github/*"
       
       - name: Upload to S3
-        run: aws s3 cp deployment-${{ github.sha }}.zip s3://codepipeline-us-east-1-ad33ae55fbee-4998-b0ca-c38c03ff9a0e/backend/deployment-${{ github.sha }}.zip --server-side-encryption aws:kms
+        run: aws s3 cp deployment-${{ github.sha }}.zip s3://restaurant-github-deployments/backend/deployment-${{ github.sha }}.zip
       
       - name: Create CodeDeploy deployment
         run: |
           aws deploy create-deployment \
             --application-name restaurant-backend-app-dev \
             --deployment-group-name production-dg-restaurant-inplace \
-            --s3-location bucket=codepipeline-us-east-1-ad33ae55fbee-4998-b0ca-c38c03ff9a0e,key=backend/deployment-${{ github.sha }}.zip,bundleType=zip \
+            --s3-location bucket=restaurant-github-deployments,key=backend/deployment-${{ github.sha }}.zip,bundleType=zip \
             --description "GitHub Actions deployment - commit ${{ github.sha }}" \
             --region us-east-1
       
