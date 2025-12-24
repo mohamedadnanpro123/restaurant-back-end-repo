@@ -314,7 +314,7 @@ app.post("/api/register", async (req, res) => {
         role: 'customer'
       },
       process.env.JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: '1h' }
     );
 
     console.log("✅ User registered:", email);
@@ -420,7 +420,7 @@ app.post("/api/login", async (req, res) => {
         role: user.role || 'customer'
       },
       process.env.JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: '1h' }
     );
 
     console.log("✅ Login successful:", email);
