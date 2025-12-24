@@ -29,9 +29,9 @@ jobs:
       
       - name: Upload to S3
         run: |
-        aws s3 cp deployment-${{ github.sha }}.zip \
-        s3://codepipeline-us-east-1-ad33ae55fbee-4998-b0ca-c38c03ff9a0e/backend/deployment-${{ github.sha }}.zip \
-        --server-side-encryption aws:kms
+          aws s3 cp deployment-${{ github.sha }}.zip \
+            s3://codepipeline-us-east-1-ad33ae55fbee-4998-b0ca-c38c03ff9a0e/backend/deployment-${{ github.sha }}.zip \
+            --server-side-encryption aws:kms
       
       - name: Create CodeDeploy deployment
         run: |
