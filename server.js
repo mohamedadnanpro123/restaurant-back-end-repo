@@ -14,7 +14,7 @@ console.log("DB_HOST:", process.env.DB_HOST);
 console.log("DB_USER:", process.env.DB_USER);
 console.log("DB_NAME:", process.env.DB_NAME);
 console.log("DB_PORT:", process.env.DB_PORT);
-console.log(`🚀 Production deployment - ${new Date().toISOString()}`); //// this is for testing pipeline for production
+console.log(`🚀 Production deployment via github actions - ${new Date().toISOString()}`); //// this is for testing pipeline for production
 const app = express();
 app.set('trust proxy', true);
 const PORT = process.env.PORT || 5000;
