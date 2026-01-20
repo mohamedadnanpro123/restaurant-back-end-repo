@@ -8,7 +8,7 @@ on:
 env:
   ECR_REPOSITORY: 044941685774.dkr.ecr.us-east-1.amazonaws.com/restaurant-backend
   AWS_REGION: us-east-1
-  ASG_NAME: restaurant-asg-2026012008531497490000000a  # Update this with your actual ASG name
+  ASG_NAME: restaurant-asg-2026012017322320060000000a  # Update this with your actual ASG name
 
 jobs:
   deploy:
