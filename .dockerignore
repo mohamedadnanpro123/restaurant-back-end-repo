@@ -1,0 +1,8 @@
+node_modules
+npm-debug.log
+.env
+.git
+.github
+backup-old-deployment
+*.md
+.DS_Store

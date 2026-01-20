@@ -1,0 +1,62 @@
+name: Deploy Production Backend (Docker)
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  ECR_REPOSITORY: 044941685774.dkr.ecr.us-east-1.amazonaws.com/restaurant-backend
+  AWS_REGION: us-east-1
+  ASG_NAME: restaurant-asg-2026012008531497490000000a  # Update this with your actual ASG name
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region ${{ env.AWS_REGION }} | \
+          docker login --username AWS --password-stdin ${{ env.ECR_REPOSITORY }}
+      
+      - name: Build Docker image
+        run: |
+          docker build -t restaurant-backend .
+      
+      - name: Tag Docker image
+        run: |
+          # Tag with latest
+          docker tag restaurant-backend:latest ${{ env.ECR_REPOSITORY }}:latest
+          # Tag with commit SHA for versioning
+          docker tag restaurant-backend:latest ${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+      
+      - name: Push Docker image to ECR
+        run: |
+          # Push both tags
+          docker push ${{ env.ECR_REPOSITORY }}:latest
+          docker push ${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+      
+      - name: Trigger Auto Scaling Group Instance Refresh
+        run: |
+          echo "🔄 Starting Instance Refresh for ASG: ${{ env.ASG_NAME }}"
+          aws autoscaling start-instance-refresh \
+            --auto-scaling-group-name ${{ env.ASG_NAME }} \
+            --preferences '{"MinHealthyPercentage": 50, "InstanceWarmup": 300}' \
+            --region ${{ env.AWS_REGION }}
+          
+          echo "✅ Instance Refresh initiated!"
+          echo "📊 Monitor at: https://console.aws.amazon.com/ec2/v2/home?region=${{ env.AWS_REGION }}#AutoScalingGroups:"
+          echo "🐳 Docker image tags pushed:"
+          echo "   - ${{ env.ECR_REPOSITORY }}:latest"
+          echo "   - ${{ env.ECR_REPOSITORY }}:${{ github.sha }}"
