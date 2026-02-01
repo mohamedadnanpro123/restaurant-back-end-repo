@@ -8,7 +8,7 @@ on:
 env:
   ECR_REPOSITORY: 044941685774.dkr.ecr.us-east-1.amazonaws.com/restaurant-backend
   AWS_REGION: us-east-1
-  ASG_NAME: restaurant-asg-2026012017322320060000000a  # Update this with your actual ASG name
+  
 
 jobs:
   deploy:
@@ -47,16 +47,15 @@ jobs:
           docker push ${{ env.ECR_REPOSITORY }}:latest
           docker push ${{ env.ECR_REPOSITORY }}:${{ github.sha }}
       
-      - name: Trigger Auto Scaling Group Instance Refresh
+      - name: Force new ECS deployment
         run: |
-          echo "🔄 Starting Instance Refresh for ASG: ${{ env.ASG_NAME }}"
-          aws autoscaling start-instance-refresh \
-            --auto-scaling-group-name ${{ env.ASG_NAME }} \
-            --preferences '{"MinHealthyPercentage": 50, "InstanceWarmup": 300}' \
+          aws ecs update-service \
+            --cluster restaurant-cluster \
+            --service restaurant-service \
+            --force-new-deployment \
             --region ${{ env.AWS_REGION }}
           
-          echo "✅ Instance Refresh initiated!"
-          echo "📊 Monitor at: https://console.aws.amazon.com/ec2/v2/home?region=${{ env.AWS_REGION }}#AutoScalingGroups:"
+          echo "✅ ECS deployment triggered!"
           echo "🐳 Docker image tags pushed:"
           echo "   - ${{ env.ECR_REPOSITORY }}:latest"
           echo "   - ${{ env.ECR_REPOSITORY }}:${{ github.sha }}"
