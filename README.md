@@ -3,7 +3,7 @@
 Production-grade Node.js backend for the Restaurant Management Platform, deployed on **AWS ECS** with a fully automated CI/CD pipeline.
 
 ## 🌐 Live Website
-[www.restaurantsolutions.shop](https://www.restaurantsolutions.shop)
+[www.restaurantsolutions.shop](https://www.restaurantsolutions.shop)(https://app.restaurantsolutions.shop)
 
 ---
 
