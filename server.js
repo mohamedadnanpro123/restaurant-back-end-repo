@@ -14,7 +14,7 @@ console.log("DB_HOST:", process.env.DB_HOST);
 console.log("DB_USER:", process.env.DB_USER);
 console.log("DB_NAME:", process.env.DB_NAME);
 console.log("DB_PORT:", process.env.DB_PORT);
-console.log('🚀 CICD TEST - Production deployment via github actions using docker image - ' + new Date().toISOString());
+console.log("🚀 Running on AWS ECS - Elastic Container Service");
 const app = express();
 app.set('trust proxy', true);
 const PORT = process.env.PORT || 5000;
