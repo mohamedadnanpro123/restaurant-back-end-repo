@@ -14,7 +14,8 @@ console.log("DB_HOST:", process.env.DB_HOST);
 console.log("DB_USER:", process.env.DB_USER);
 console.log("DB_NAME:", process.env.DB_NAME);
 console.log("DB_PORT:", process.env.DB_PORT);
-console.log("🚀 Running on AWS ECS - Elastic Container Service");
+// Add or update a console.log with new timestamp
+console.log('🚀 Deployment timestamp: 2026-02-08 18:00 - Testing GitHub Actions');
 const app = express();
 app.set('trust proxy', true);
 const PORT = process.env.PORT || 5000;
